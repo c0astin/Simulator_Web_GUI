@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filament Extruder</title>
+    <script src="https://unpkg.com/htmx.org@1.9.2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Include Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.0"></script>
+
+</head>
+<body>
+    <h3>Filament Extruder - Process Surveillance</h3>
+
+    <!-- SVG Container -->
+    <div id="svg-container">
+        <object id="svg-object" type="image/svg+xml" data="/static/Extruder.svg">
+            Your browser does not support SVG
+        </object>
+    </div>
+
+    <hr />
+
+
+
+    <!-- Chart Container -->
+    <h3>Live Data</h3>
+    <table>
+        <tr><td>
+        <canvas id="chart_temp" width="450" height="250"  style="border: 1px solid #000000;"></canvas>
+    </td>
+    <td>
+        <canvas id="chart_diameter" width="450" height="250"  style="border: 1px solid #000000;"></canvas>
+    </td>
+    </tr>
+    <tr>
+        <td>
+            <canvas id="chart_screw_rpm" width="450" height="250"  style="border: 1px solid #000000;"></canvas>
+        </td>
+        <td>
+            <canvas id="chart_spooler_rpm" width="450" height="250"  style="border: 1px solid #000000;"></canvas>
+        </td>
+    </tr>
+    </table>
+    <script>
+        // Initialize the chart
+        const ctx_diameter = document.getElementById('chart_diameter').getContext('2d');
+        const chartDiameter = new Chart(ctx_diameter, {
+            type: 'line',
+            data: {
+                labels: [], // Time labels will be added dynamically
+                datasets: [{
+                    label: 'Filament diameter',
+                    data: [], // Diameter values will be added dynamically
+                    borderColor: 'blue',
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                animation: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Filament diameter'
+                    }
+                },
+
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'second'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Diameter [mm]'
+                        }
+                    }
+                }
+            }
+        });
+                // Initialize the chart
+        const ctx_temperature = document.getElementById('chart_temp').getContext('2d');
+        const chartTemperature = new Chart(ctx_temperature, {
+            type: 'line',
+            data: {
+                labels: [], // Time labels will be added dynamically
+                datasets: [{
+                    label: 'Extruder Temperature',
+                    data: [], // Diameter values will be added dynamically
+                    borderColor: 'red',
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                animation: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Extruder temperature'
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'second'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Temperature [°C]'
+                        }
+                    }
+                }
+            }
+        });
+                // Initialize the chart
+        const ctx_spoolerRpm = document.getElementById('chart_spooler_rpm').getContext('2d');
+        const chartSpoolerRpm = new Chart(ctx_spoolerRpm, {
+            type: 'line',
+            data: {
+                labels: [], // Time labels will be added dynamically
+                datasets: [{
+                    label: 'Spooler RPM',
+                    data: [], // Diameter values will be added dynamically
+                    borderColor: 'green',
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                animation: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Spooler RPM'
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'second'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Spooler RPM'
+                        }
+                    }
+                }
+            }
+        });
+                // Initialize the chart
+        const ctx_screwRpm = document.getElementById('chart_screw_rpm').getContext('2d');
+        const chartScrewRpm = new Chart(ctx_screwRpm, {
+            type: 'line',
+            data: {
+                labels: [], // Time labels will be added dynamically
+                datasets: [{
+                    label: 'Screw RPM',
+                    data: [], // Diameter values will be added dynamically
+                    borderColor: 'black',
+                    borderWidth: 2,
+                    fill: false,
+                    pointRadius: 0
+                }]
+            },
+            options: {
+                animation: false,
+                plugins: {
+                    legend: {
+                        display: false
+                    },
+                    title: {
+                        display: true,
+                        text: 'Screw RPM'
+                    }
+                },
+                scales: {
+                    x: {
+                        type: 'time',
+                        time: {
+                            unit: 'second'
+                        }
+                    },
+                    y: {
+                        title: {
+                            display: true,
+                            text: 'Screw RPM'
+                        }
+                    }
+                }
+            }
+        });
+
+    const charts = [
+        { chart: chartDiameter, key: 'diameter' },
+        { chart: chartTemperature, key: 'temperature' },
+        { chart: chartSpoolerRpm, key: 'spoolerRpm' },
+        { chart: chartScrewRpm, key: 'screwRpm' }
+    ];
+
+    function updateCharts(data) {
+    // Iterate over the charts array
+    charts.forEach(({ chart, key }) => {
+        const timestamp = new Date(data[key].timestamp)
+        const value = data[key].value;
+
+        // Update the chart data
+        chart.data.labels.push(timestamp);
+        chart.data.datasets[0].data.push(value);
+        chart.update();
+    });
+    }
+
+    const svgObject = document.getElementById('svg-object');
+
+    svgObject.addEventListener('load', function () {
+        const svgDoc = svgObject.contentDocument;
+        const tempLabel = svgDoc.getElementById('tempText');
+        const diameterLabel = svgDoc.getElementById('diameterText');
+        const spoolerRpmLabel = svgDoc.getElementById('spoolerRpmText');
+        const screwRpmLabel = svgDoc.getElementById('screwRpmText');
+
+        function updateSvgLabels(data) {
+            if (tempLabel) {
+                    tempLabel.textContent = `${data.temperature.value} °C`;
+                }
+            if (diameterLabel) {
+                diameterLabel.textContent = `${data.diameter.value} mm`;
+            }  
+            if (spoolerRpmLabel) {
+                    spoolerRpmLabel.textContent = `${data.spoolerRpm.value} [1/min]`;
+                }
+            if (screwRpmLabel) {
+                screwRpmLabel.textContent = `${data.screwRpm.value} [1/min]`;
+            }          
+        }
+
+
+            // Poll the backend for data and update the chart
+            setInterval(function() {
+                fetch('/data')
+                    .then(response => response.json())
+                    .then(data => {
+                        updateCharts(data);
+                        updateSvgLabels(data)
+                    });
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

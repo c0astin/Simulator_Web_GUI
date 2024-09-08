@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<svg version='1.1' xmlns='http://www.w3.org/2000/svg' xmlns:xlink='http://www.w3.org/1999/xlink' width='650pt' height='290pt' viewBox='0 0 650 290'>
+
+  <defs>
+    <!-- A marker to be used as an arrowhead -->
+    <marker
+      id="arrow"
+      viewBox="0 0 10 10"
+      refX="5"
+      refY="5"
+      markerWidth="6"
+      markerHeight="6"
+      orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" />
+    </marker>
+      <marker
+      id="arrow_s"
+      viewBox="0 0 10 10"
+      refX="5"
+      refY="5"
+      markerWidth="5"
+      markerHeight="5"
+      orient="auto-start-reverse">
+      <path d='M 0 0 L 7 5 L 0 10 L5 5 Z' fill = 'none' stroke='black' />
+    </marker>
+  </defs>
+
+
+<g id='extruder'>
+<path d='M270 170V100H360V170Z' fill='#f00' stroke='black'/>
+<path d='M160 165H385L415 140V130L385 105H160V165' fill='#00f' stroke='black'/>
+<path d='M160 155H375L405 135L377 115H160V155' fill='#bfbfbf' stroke='black'/>
+<path d='M175 162 L200 107 H205 L180 162 Z' fill='#bfbfbf' stroke='black'/>
+<path d='M200 162L225 107H230L205 162Z' fill='#bfbfbf' stroke='black'/>
+<path d='M225 162L250 107H255L230 162Z' fill='#bfbfbf' stroke='black'/>
+<path d='M250 162L275 107H280L255 162Z' fill='#bfbfbf' stroke='black'/>
+<path d='M275 162L300 107H305L280 162Z' fill='#bfbfbf' stroke='black'/>
+<path d='M300 162L325 107H330L305 162Z' fill='#bfbfbf' stroke='black'/>
+<path d='M325 162L350 107H355L330 162Z' fill='#bfbfbf' stroke='black'/>
+<path d='M350 162L375 107H380L355 162Z' fill='#bfbfbf' stroke='black'/>
+<path d='M100 180V100H160V180Z' fill='#bfbfbf' stroke='black'/>
+</g>
+
+<g id='symbols'>
+<circle cx="135" cy="210" r="20" fill='white' stroke='black' stroke-width="2"/>
+<text x="135" y="210" text-anchor="middle" alignment-baseline="central" >M</text>
+<path d='M135 190V180' stroke='black' stroke-width="1.5" fill='none'/>
+
+<circle cx="60" cy="210" r="20" fill='white' stroke='black' stroke-width="2"/>
+<path d='M47 222  71 200' marker-end='url(#arrow)' fill='none' stroke='black'  />
+<path d='M80 210H115' stroke='black' stroke-width="1.5" fill='none'/>
+<path d='M60 230V250' stroke='black' stroke-width="1.5" stroke-dasharray= "2,2" marker-end='url(#arrow_s)' fill='none'/>
+<path d='M135 270V232' stroke='black' stroke-width="1.5" stroke-dasharray= "2,2" marker-end='url(#arrow_s)' fill='none'/>
+<text x="135" y="280" text-anchor="middle" alignment-baseline="central" font-size='smaller'>Soll-Drehzahl</text>
+
+<circle cx="315" cy="210" r="20" fill='white' stroke='black' stroke-width="2"/>
+<text x="315" y="210" text-anchor="middle" alignment-baseline="central" >H</text>
+<path d='M315 190V170' stroke='black' stroke-width="1.5" fill='none'/>
+<path d='M315 250V232' stroke='black' stroke-width="1.5" stroke-dasharray= "2,2" marker-end='url(#arrow_s)' fill='none'/>
+<text x="315" y="260" text-anchor="middle" alignment-baseline="central" font-size='smaller'>Heizleistung [%]</text>
+
+<circle cx="375" cy="65" r="20" fill='white' stroke='black' stroke-width="2"/>
+<path d='M362 77  386 55' marker-end='url(#arrow)' fill='none' stroke='black'  />
+<path d='M375 85V105' stroke='black' stroke-width="1.5" fill='none'/>
+<path d='M375 45V25' stroke='black' stroke-width="1.5" stroke-dasharray= "2,2" marker-end='url(#arrow_s)' fill='none'/>
+
+<path d='M120 30 V50 L170 95 V 105' fill = 'none' stroke = 'black' stroke-width = '1.5' />
+<path d='M240 30 V50 L190 95 V 105' fill = 'none' stroke = 'black' stroke-width = '1.5' />
+
+<rect width = '50' height = '20' x = '440' y = '125' fill= 'grey' stroke= 'black' />
+<path d= 'M465 125 V 100' fill= 'none' stroke = 'black' stroke-width = '1.5' />
+<circle cx="465" cy="80" r="20" fill='white' stroke='black' stroke-width="2"/>
+<path d='M452 92  476 70' marker-end='url(#arrow)' fill='none' stroke='black'  />
+<path d='M465 60V40' stroke='black' stroke-width="1.5" stroke-dasharray= "2,2" marker-end='url(#arrow_s)' fill='none'/>
+
+<path d='M410 135H560' stroke='#00f' fill='none' stroke-width='1.99255' stroke-miterlimit='10'/>
+<circle cx = '580' cy = '100' r='50' fill='grey' stroke='black' stroke-width='1.5' />
+<circle cx = '580' cy = '100' r='10' fill='black'  stroke-width='1.5' />
+
+<circle cx="580" cy="210" r="20" fill='white' stroke='black' stroke-width="2"/>
+<text x="580" y="210" text-anchor="middle" alignment-baseline="central" >M</text>
+<path d='M580 190V150' stroke='black' stroke-width="1.5" fill='none'/>
+
+<circle cx="500" cy="210" r="20" fill='white' stroke='black' stroke-width="2"/>
+<path d='M487 222  511 200' marker-end='url(#arrow)' fill='none' stroke='black'  />
+<path d='M520 210H560' stroke='black' stroke-width="1.5" fill='none'/>
+<path d='M500 230V250' stroke='black' stroke-width="1.5" stroke-dasharray= "2,2" marker-end='url(#arrow_s)' fill='none'/>
+<path d='M580 270V232' stroke='black' stroke-width="1.5" stroke-dasharray= "2,2" marker-end='url(#arrow_s)' fill='none'/>
+<text x="580" y="280" text-anchor="middle" alignment-baseline="central" font-size='smaller'>Soll-Drehzahl</text>
+
+
+
+
+
+<text x='180' y='20' text-anchor="middle" alignment-baseline="central" font-size='smaller'>Befülltrichter </text>
+<text x='30' y='95' font-size='smaller'>Schneckenantrieb</text>
+<text x='465' y='155' text-anchor="middle" alignment-baseline="central" font-size='smaller'>Laser-Sensor</text>
+<text x='600' y='45' font-size='smaller'>Spule</text>
+<text x='350' y='185' font-size='smaller'>Heizelement</text>
+<text x='220' y='92' font-size='smaller'>Schneckenextruder</text>
+<text x='400' y='110' font-size='smaller' >Düse</text> 
+
+<text id = "screwRpmText" x="60" y="260" text-anchor="middle" alignment-baseline="central" font-size='smaller' font-weight="bold">Ist-Drehzahl</text>
+<text id = "tempText" x="375" y="10" text-anchor="middle" alignment-baseline="central" font-size='smaller' font-weight="bold">Temperatur[°C]</text>
+<text id = "diameterText" x="465" y="30" text-anchor="middle" alignment-baseline="central" font-size='smaller' font-weight="bold">Fil.-Durchmesser [mm]</text>
+<text id = "spoolerRpmText" x="500" y="260" text-anchor="middle" alignment-baseline="central" font-size='smaller' font-weight="bold">Ist-Drehzahl</text>
+</g>
+</svg>
