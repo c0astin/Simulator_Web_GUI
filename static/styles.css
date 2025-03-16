@@ -1,0 +1,284 @@
+:root {
+    --color-text: #2c3e50;
+    --color-container-bg:#fff;
+    --color-page-bg: #bac3cc; 
+    --color-elements: #2c5f81;
+    --color-chart-bg: #eceff1; 
+}
+
+/* General page styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--color-page-bg);
+    color: var(--color-text);
+    margin: 0;
+    padding: 20px;
+}
+
+/* Header styling */
+h2 {
+    color: var(--color-text);
+    font-size: 1.2em;
+}
+
+#svg-wrapper {
+    display: flex;
+    justify-content: space-between; /* Ensures SVG and Stats Panel are aligned */
+    align-items: stretch; /* Makes both elements the same height */
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0px;
+    gap: 20px;
+    box-sizing: border-box;
+}
+/* SVG Container - Scales with the window */
+#svg-container {
+    flex: 1; /* Takes available space */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--color-container-bg);
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    min-height: 350px; /* Ensures consistent height */
+    box-sizing: border-box;
+}
+
+
+/* SVG Image scaling */
+#svg-object {
+    width: 100%;      
+    height: auto;   
+    max-width: 1000px; 
+}
+
+/* Collapsible elements styling */
+.collapsible {
+    cursor: pointer;
+    font-weight: bold;
+    margin: 10px 0;
+    color: var(--color-text);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.content {
+    display: block;
+    margin-top: 10px;
+}
+
+.content.hidden {
+    display: none;
+}
+
+/* Control panel styling */
+.control-panel {
+    display: flex;
+    flex-direction: column;
+    background-color: var(--color-container-bg);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    display: grid;
+    gap: 15px;
+}
+
+/* Live data container */
+.live-data-container {
+    background-color: var(--color-container-bg);
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+}
+
+/* Individual control group styling */
+.control-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.control-group label {
+    font-weight: bold;
+    width: 100px;
+}
+
+.control-group input[type="number"] {
+    flex-grow: 1;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+/* Button styling */
+button {
+    padding: 10px;
+    background-color: var(--color-elements);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: 0.4s;
+}
+
+button:disabled {
+    background-color: #bdc3c7;
+    cursor: not-allowed;
+    transition: 0.4s;
+}
+
+/* Style for the Emergency Stop button */
+.emergency-button {
+    background-color: #ff4d4d; /* Red color */
+
+    color: white;
+    font-weight: bold;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-left: auto;
+}
+
+/* Container for the mode switch */
+.mode-switch {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: bold;
+    width: 171px;
+}
+
+/* Style for the switch container */
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+}
+
+/* Hide the default checkbox */
+.switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The slider */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.4s;
+    border-radius: 24px;
+}
+
+/* Slider with a circle inside */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 3px;
+    bottom: 2px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+/* Color when checked */
+input:checked + .slider {
+    background-color: var(--color-elements);
+}
+
+/* Move the slider circle when checked */
+input:checked + .slider:before {
+    transform: translateX(24px);
+}
+
+.mode-switch label {
+    margin-right: 8px;
+    font-weight: bold;
+}
+
+/* Message container styling */
+.message-container {
+    background-color: var(--color-container-bg);
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    max-height: 200px;
+    overflow-y: auto;
+    font-family: monospace;
+    font-size: 0.9em;
+}
+
+/* Table for chart layout */
+table {
+    width: 100%;
+    table-layout: fixed;
+}
+
+canvas {
+    border: 1px solid #ddd;
+    width: 100%;
+    height: auto;
+    background-color: var(--color-chart-bg);
+    border-radius: 4px;
+    padding: 10px;
+    height: 300px;
+}
+
+
+/* Stats Panel - Matches SVG height */
+#stats-panel {
+    width: 300px; /* Fixed width */
+    background-color: var(--color-container-bg);
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #ddd;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+
+    min-height: 100%; /* Matches the SVG container height */
+}
+
+/* Ensure Stats Panel Text is Properly Aligned */
+#stats-panel h3 {
+    text-align: left;
+    margin-bottom: 10px;
+}
+
+#stats-panel p {
+    font-size: 1em;
+    margin: 5px 0;
+    text-align: left;
+}
+
+/* Responsive behavior */
+@media (max-width: 900px) {
+    #svg-wrapper {
+        flex-direction: column; /* Stack elements on small screens */
+        align-items: center;
+    }
+    
+    #stats-panel {
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        margin-left: 0; /* Remove margin when stacked */
+        margin-top: 10px; /* Add spacing when stacked */
+    }
+}

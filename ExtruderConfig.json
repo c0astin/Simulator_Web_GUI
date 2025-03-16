@@ -1,0 +1,9 @@
+{
+    "mode": "PipeMode",
+    "tcpAddress": "127.0.0.1:8081",
+    "simModePipe": "/home/kai/OpenPEARL/openpearl-code/demos/filamentExtruder/simulator",
+    "msgFromSimPipe": "/home/kai/OpenPEARL/openpearl-code/demos/filamentExtruder/msgFromSim",
+    "msgToSimPipe": "/home/kai/OpenPEARL/openpearl-code/demos/filamentExtruder/msgToSim"
+}
+  
+
