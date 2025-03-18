@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	config.LoadConfig("ExtruderConfig.json")
+	config.LoadConfig("ExtruderUIConfig.json")
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	switch config.Cfg.Mode {
