@@ -1,123 +1,167 @@
 package data
 
 import (
-	"bytes"
-	"encoding/hex"
-	"log"
 	"testing"
 )
 
-// Mock message channel
-var mockMessageChannel = make(chan string, 1)
+// Test for GetValuesFromRow: Valid input line
+func TestGetValuesFromRow_ValidLine(t *testing.T) {
+	// Valid example data line with random values
+	validLine := "12:00:00.000 | 1.0 | 2.5 | 50 | 100 | 1.7 | 201.1 | 0 | 50 | 2 | 50 | 100"
 
-// Override the messageChannel for testing
-func init() {
-	messageChannel = mockMessageChannel
-}
+	// Call GetValuesFromRow with valid data
+	// Expected result: stats in data struct updated to expected values
+	GetValuesFromRow(validLine, "|")
 
-// Test for GetValuesFromRow
-func TestGetValuesFromRow(t *testing.T) {
-	// Setup mock data
-	colMap = map[int]*Datapoint{
-		1: &Datapoint{},
-		2: &Datapoint{},
-	}
-	//timestampLayout := "2006-01-02"
+	// Expected values
+	expectedTemperature := float32(201.1)
+	expectedDiameter := float32(1.7)
 
-	line := "2024-12-08 12:00:00,25.5,13.7"
-	separator := ","
-
-	// Execute the function
-	GetValuesFromRow(line, separator)
-
-	// Validate the results
-	if colMap[1].Value != 25.5 {
-		t.Errorf("Expected value 25.5, got %v", colMap[1].Value)
+	// Check if values have changed to target values
+	if currentData.Temperature.Value != expectedTemperature {
+		t.Errorf("Temperature wasn't updated correctly. Expected: %v, received: %v", expectedTemperature, currentData.Temperature.Value)
 	}
 
-	if colMap[2].Value != 13.7 {
-		t.Errorf("Expected value 13.7, got %v", colMap[2].Value)
-	}
-
-	if colMap[1].Timestamp.IsZero() {
-		t.Errorf("Expected timestamp to be parsed, but got zero value")
+	if currentData.Diameter.Value != expectedDiameter {
+		t.Errorf("Diameter wasn't updated correctly. Expected: %v, received: %v", expectedDiameter, currentData.Diameter.Value)
 	}
 }
 
-// Test for GetValuesFromRow with invalid input
-func TestGetValuesFromRow_InvalidInput(t *testing.T) {
-	// Setup mock data
-	colMap = map[int]*Datapoint{
-		1: &Datapoint{},
-		2: &Datapoint{},
-	}
-	timestampLayout := "2006-01-02"
+// Test for GetValuesFromRow: Line with invalid values
+func TestGetValuesFromRow_InvalidValues(t *testing.T) {
+	// Invalid data line
+	invalidLine := "12:00:00.000 | 1.0 | 2.5 | 50 | 100 | 2.0 | X | 0 | 50 | 2 | 50 | 100"
 
-	line := "Invalid data"
-	separator := ","
+	// Call GetValuesFromRow with right formatting but invalid data
+	// Expected result: invalid value in data struct not changed
+	GetValuesFromRow(invalidLine, "|")
 
-	// Execute the function
-	GetValuesFromRow(line, separator)
+	// Expected values
+	expectedTemperature := float32(0) //Initial value
+	expectedDiameter := float32(2)
 
-	// Validate that no data points were updated
-	if colMap[1].Value != 0 {
-		t.Errorf("Expected value 0, got %v", colMap[1].Value)
+	// Check if values have changed to target values
+	if currentData.Temperature.Value != expectedTemperature {
+		t.Errorf("Temperature wasn't updated correctly. Expected: %v, received: %v", expectedTemperature, currentData.Temperature.Value)
 	}
 
-	if colMap[2].Value != 0 {
-		t.Errorf("Expected value 0, got %v", colMap[2].Value)
-	}
-
-	if !colMap[1].Timestamp.IsZero() {
-		t.Errorf("Expected timestamp to remain zero, but got %v", colMap[1].Timestamp)
+	if currentData.Diameter.Value != expectedDiameter {
+		t.Errorf("Diameter wasn't updated correctly. Expected: %v, received: %v", expectedDiameter, currentData.Diameter.Value)
 	}
 }
 
-// Test for GetValueFromMsg with valid input
-func TestGetValueFromMsg_ValidInput(t *testing.T) {
-	// Setup mock data
-	msgInMap = map[byte]*Datapoint{
-		1: &Datapoint{},
+// Test for GetValuesFromRow: Line with invalid formatting
+func TestGetValuesFromRow_InvalidFormat(t *testing.T) {
+	// Invalid data line
+	invalidLine := "12:00:00.000 | 1.0 | 100 "
+
+	currentData.ScrewRpm.Value = float32(30)
+	currentData.Diameter.Value = float32(0)
+
+	// Call GetValuesFromRow with right formatting but invalid data
+	// Expected result: No change in data struct if input string has less then 3 "|" separators
+	GetValuesFromRow(invalidLine, "|")
+
+	// Expected values
+	expectedScrewRpm := float32(30) //Initial value
+	expectedDiameter := float32(0)
+
+	// Check if values have changed to target values
+	if currentData.ScrewRpm.Value != expectedScrewRpm {
+		t.Errorf("ScrewRpm wasn't updated correctly. Expected: %v, received: %v", expectedScrewRpm, currentData.ScrewRpm.Value)
 	}
 
-	// Correct Hexadecimal string with 8 bytes
-	line := "01020304AABBCCDD" // 8 bytes
-	decodedMsg, _ := hex.DecodeString(line)
-	expectedValue := uint32(decodedMsg[4])<<24 | uint32(decodedMsg[5])<<16 | uint32(decodedMsg[6])<<8 | uint32(decodedMsg[7])
-
-	// Execute the function
-	GetValueFromMsg(line)
-
-	// Validate the results
-	if datapoint, exists := msgInMap[1]; exists {
-		if datapoint.Value != float32(expectedValue) {
-			t.Errorf("Expected value %v, got %v", float32(expectedValue), datapoint.Value)
-		}
-
-		if datapoint.Timestamp.IsZero() {
-			t.Errorf("Expected timestamp to be set, but got zero value")
-		}
-	} else {
-		t.Errorf("Datapoint with ID 1 not found in msgInMap")
+	if currentData.Diameter.Value != expectedDiameter {
+		t.Errorf("Diameter wasn't updated correctly. Expected: %v, received: %v", expectedDiameter, currentData.Diameter.Value)
 	}
 }
 
-// Test for GetValueFromMsg with short input
-func TestGetValueFromMsg_ShortInput(t *testing.T) {
-	// Capture log output
-	var logBuffer bytes.Buffer
-	log.SetOutput(&logBuffer)
-	defer log.SetOutput(nil) // Reset log output after the test
+// Test for GetStatsFromRow: Valid input line
+func TestGetStatsFromRow_ValidLine(t *testing.T) {
+	// Valid example data line with random values
+	validLine := "12:00:00.000 | 1.0 | 2.5 | 50 | 100 | 1 | 201.1 | 0 | 60.5 | 2.20 | 100 | 200"
 
-	// Short Hexadecimal string
-	line := "01020304" // Only 4 bytes
+	// Call GetStatsFromRow with valid data
+	// Expected result: stats in data struct updated to expecte values
+	GetStatsFromRow(validLine, "|")
 
-	// Execute the function
-	GetValueFromMsg(line)
+	// Expected values
+	expectedWindingDiameter := float32(60.5)
+	expectedFilamentMass := float32(200)
 
-	// Validate the log output and ensure no panic occurred
-	expectedMessage := "Expected 8 bytes, got 4 bytes"
-	if !bytes.Contains(logBuffer.Bytes(), []byte(expectedMessage)) {
-		t.Errorf("Expected log message '%s', got '%s'", expectedMessage, logBuffer.String())
+	// Check if values have changed to target values
+	if curSpoolStats.WindingDiameter.Value != expectedWindingDiameter {
+		t.Errorf("WindingDiameter wasn't updated correctly. Expected: %v, received: %v", expectedWindingDiameter, curSpoolStats.WindingDiameter.Value)
+	}
+	if curSpoolStats.FilamentMass.Value != expectedFilamentMass {
+		t.Errorf("FilamentMass wasn't updated correctly. Expected: %v, received: %v", expectedFilamentMass, curSpoolStats.FilamentMass.Value)
+	}
+}
+
+// Test for GetStatsFromRow: Line with invalid values
+func TestGetStatsFromRow_InvalidLine(t *testing.T) {
+	// Invalid data line
+	invalidLine := "12:00:00.000 | X | 1.2 | X | 100 | 1 | 220.5 | 0 | 70| 32 | X | X"
+
+	// Call GetStatsFromRow with invalid data
+	// Expected result: Data unchanged
+	GetStatsFromRow(invalidLine, "|")
+
+	// Expected values
+	expectedWindingDiameter := float32(70)
+	expectedFilamentMass := float32(0) //Initial value
+
+	// Check if values have changed to target values with 2 examples
+	if curSpoolStats.WindingDiameter.Value != expectedWindingDiameter {
+		t.Errorf("WindingDiameter wasn't updated correctly. Expected: %v, received: %v", expectedWindingDiameter, curSpoolStats.WindingDiameter.Value)
+	}
+	if curSpoolStats.FilamentMass.Value != expectedFilamentMass {
+		t.Errorf("FilamentMass wasn't updated correctly. Expected: %v, received: %v", expectedFilamentMass, curSpoolStats.FilamentMass.Value)
+	}
+}
+
+// Test for GetValueFromMsg: Valid input msg
+func TestGetValueFromMsg_ValidMsg(t *testing.T) {
+	validMsg := []byte{0x02, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x64} // Valid msg with temperature ID and value 100
+
+	//Call function with valid Msg
+	//Expected result: temperature value in data struct changed to 100
+	GetValueFromMsg(validMsg)
+
+	// Expected value
+	expectedValue := float32(100)
+
+	// Check if temperature value was updated
+	if currentData.Temperature.Value != expectedValue {
+		t.Errorf("Value wasn't updated correctly. Expected: %v, received: %v", expectedValue, currentData.Temperature.Value)
+	}
+}
+
+// Test for GetValueFromMsg: Msg not 8bytes long
+func TestGetValueFromMsg_ShortMsg(t *testing.T) {
+	prevValue := float32(50)
+	currentData.Temperature.Value = prevValue
+	//Msg with invalid length
+	invalidLenMsg := []byte{0x02, 0x00, 0x00}
+	// Call function with msg of invalid number of bytes
+	//Expected result: temperature value in data struct unchanged
+	GetValueFromMsg(invalidLenMsg)
+	if currentData.Temperature.Value != prevValue {
+		t.Errorf("Invalid message shouldn't change current data value.")
+	}
+}
+
+// Test for GetValueFromMsg: Unknown msg ID
+func TestGetValueFromMsg_UnknownID(t *testing.T) {
+	//Msg with undefined msg ID
+	invalidIDMsg := []byte{0x99, 0x00, 0x00, 0x00, 0xDC, 0x00, 0x00, 0x00}
+	// Save previous data content
+	oldData := currentData
+	// Call function with invalid ID msg
+	//Expected result: temperature value in data struct unchanged
+	GetValueFromMsg(invalidIDMsg)
+	//Check if values have changed
+	if currentData != oldData {
+		t.Errorf("Invalid message changed values! Expected: %v, received: %v", oldData, currentData)
 	}
 }

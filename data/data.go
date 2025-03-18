@@ -62,7 +62,7 @@ var msgInMap = map[byte]*Datapoint{
 	0x06: &currentData.ContactSwitch,
 }
 
-var messageChannel = make(chan string)
+var messageChannel = make(chan string, 10)
 
 var timestampLayout string = "15:04:05.000"
 
@@ -129,14 +129,14 @@ func MainViewHandler(w http.ResponseWriter, r *http.Request) {
 // SimMode: Function to get Values from Simulator Pipe row
 func GetValuesFromRow(line string, separator string) {
 	strArr := strings.Split(line, separator)
-	if len(strArr) > 2 {
+	if len(strArr) > 3 {
 		for idx, str := range strArr {
 			strArr[idx] = strings.TrimSpace(str)
 		}
 		timeStr := strings.Split(strArr[0], " ")[0]
 		parsedTime, err := time.Parse(timestampLayout, timeStr)
 		if err != nil {
-			fmt.Println("Error parsing timestamp:", err)
+			log.Println("Error parsing timestamp:", err)
 			return
 		}
 		for key, val := range colMap {
@@ -160,7 +160,7 @@ func GetStatsFromRow(line string, separator string) {
 		timeStr := strings.Split(strArr[0], " ")[0]
 		parsedTime, err := time.Parse(timestampLayout, timeStr)
 		if err != nil {
-			fmt.Println("Error parsing timestamp:", err)
+			log.Println("Error parsing timestamp:", err)
 			return
 		}
 		var tempStats SpoolStats = curSpoolStats
@@ -171,6 +171,7 @@ func GetStatsFromRow(line string, separator string) {
 				val.Timestamp = parsedTime
 			}
 		}
+		// Condition for replacing the previous spool stats: FilamentMass has been reset (smaller then prev. value) & New run is active (WindingDiameter Value)
 		if tempStats.FilamentMass.Value > curSpoolStats.FilamentMass.Value && tempStats.WindingDiameter.Value > 12 {
 			prevSpoolStats = tempStats
 		}
@@ -186,8 +187,6 @@ func GetValueFromMsg(msg []byte) {
 		return // Skip this message
 	}
 
-	//fmt.Printf("Received message: %x\n", msg)
-
 	//Decode id from first byte
 	id := msg[0]
 	//Decode value from the last 4 bytes
@@ -196,9 +195,9 @@ func GetValueFromMsg(msg []byte) {
 	//Check if id matches metric and assign value
 	if datapoint, ok := msgInMap[id]; ok {
 		datapoint.Value = float32(value)
-		datapoint.Timestamp = time.Now() // Set the current time as the timestamp
+		datapoint.Timestamp = time.Now() // Set the current time as the timestamp. Change to msg timestamp!
 	} else {
-		//fmt.Printf("No matching ID %d for incoming message\n", id)
+		log.Printf("No matching ID %d for incoming message\n", id)
 		return // Skip this message
 	}
 
