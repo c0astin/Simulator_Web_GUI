@@ -42,5 +42,5 @@ func main() {
 
 	http.HandleFunc("/messages", data.MessagesHandler)
 
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":"+config.Cfg.HttpPort, nil))
 }

@@ -11,6 +11,7 @@ import (
 // Json config structure
 type Config struct {
 	Mode           string `json:"mode"` //Options "PipeMode", "TCPMode", "SimMode"
+	HttpPort       string `json:"httpPort"`
 	TCPAddress     string `json:"tcpAddress"`
 	SimModePipe    string `json:"simModePipe"`    //Path to SimMode Pipe
 	MsgFromSimPipe string `json:"msgFromSimPipe"` //Path to IN Pipe
@@ -32,6 +33,7 @@ func LoadConfig(filePath string) error {
 			SimModePipe:    "/tmp/simulator",
 			MsgFromSimPipe: "/tmp/msgFromSim",
 			MsgToSimPipe:   "/tmp/msgToSim",
+			HttpPort:       "8080",
 		}
 		return nil
 
