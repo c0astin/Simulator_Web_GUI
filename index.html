@@ -112,7 +112,7 @@
                 updateChart(chartScrewRpm, data['screwRpm']);
                 updateChart(chartSpoolerRpm, data['spoolerRpm']);
             });
-    }, 1000);
+    }, 500);
 
     // Initialize charts
     const chartDiameter = initChart(document.getElementById('chart_diameter').getContext('2d'), 'Filament Diameter [μm]', 'blue');
