@@ -25,7 +25,7 @@ func LoadConfig(filePath string) error {
 	file, err := os.Open(filePath)
 	//Check if file exists
 	if errors.Is(err, os.ErrNotExist) {
-		log.Printf("Warnung: Datei nicht gefunden (%s). Default-Werte werden geladen.", filePath)
+		log.Printf("Warning: File not found (%s). Loading default values.", filePath)
 		// Set default values
 		Cfg = &Config{
 			Mode:           "PipeMode",
@@ -39,16 +39,16 @@ func LoadConfig(filePath string) error {
 
 	} else if err != nil {
 		//Check for other errors
-		return fmt.Errorf("Fehler beim Öffnen der Datei: %w", err)
+		return fmt.Errorf("Error opening file: %w", err)
 	}
 	defer file.Close()
 	//Decode json --> config struct
 	decoder := json.NewDecoder(file)
 	var config Config
 	if err := decoder.Decode(&config); err != nil {
-		return fmt.Errorf("Fehler beim Decodieren der json-Datei: %w", err)
+		return fmt.Errorf("Error decoding .json-File: %w", err)
 	}
 	Cfg = &config
-	log.Println("Konfiguration erfolgreich geladen.")
+	log.Println("Config loaded.")
 	return nil
 }
