@@ -12,25 +12,24 @@ import (
 
 func main() {
 	config.LoadConfig("ExtruderUIConfig.json")
-	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
 	switch config.Cfg.Mode {
 	case "SimMode":
-		log.Println("Starte im Modus: SimLog-Pipe")
+		log.Println("Starting in mode: Sim-Pipe")
 		go pipes.FromSimPipeHandler()
 	case "PipeMode":
-		log.Println("Starte im Modus: Msg-Pipe")
+		log.Println("Starting in mode: Msg-Pipe")
 		go pipes.FromSimPipeHandler()
 		go pipes.FromUserPipeHandler()
 	case "TCPMode":
 		manager := tcp.GetConnectionManager(config.Cfg.TCPAddress)
 		defer manager.CloseConnection()
-		log.Println("Starte im Modus: TCP/IP-Socket")
+		log.Println("Starting in mode: TCP/IP-Socket")
 		go tcp.TCPDataHandler(config.Cfg.TCPAddress)
 	default:
-		log.Println("Modus nicht bekannt:", config.Cfg.Mode)
+		log.Println("Mode unknown:", config.Cfg.Mode)
 	}
-
+	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 	http.HandleFunc("/", data.MainViewHandler)
 	http.HandleFunc("/data", data.DataHandler)
 	http.HandleFunc("/control/start", controls.ButtonStartHandler)
